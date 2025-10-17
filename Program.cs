@@ -10,10 +10,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var dbName = builder.Configuration.GetConnectionString("MyTestDB") ?? "DefaultTestDb";
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseInMemoryDatabase(dbName));
+//var dbName = builder.Configuration.GetConnectionString("MyTestDB") ?? "DefaultTestDb";
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//    options.UseInMemoryDatabase(dbName));
 
+var dbConnectionString = builder.Configuration.GetConnectionString("ProdDBConnection");
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(dbConnectionString));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
