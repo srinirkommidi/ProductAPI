@@ -14,9 +14,9 @@ namespace ProductAPI.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ProductDbContext _context;
 
-        public ProductsController(AppDbContext context)
+        public ProductsController(ProductDbContext context)
         {
             _context = context;
         }
@@ -25,14 +25,14 @@ namespace ProductAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            return await _context.Products.ToListAsync();
+            return await _context.Product.ToListAsync();
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Product.FindAsync(id);
 
             if (product == null)
             {
@@ -78,23 +78,55 @@ namespace ProductAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
-            _context.Products.Add(product);
+            _context.Product.Add(product);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+        }
+
+        //Patch: api/Products/1
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchProduct(int id, Product products)
+        {
+            var product = await _context.Product.FindAsync(id);
+            if (product == null)
+
+                return NotFound();
+
+            //foreach (var key in productUpdates.Keys)
+            //{
+            //    var property = product.GetType().GetProperty(key);
+            //    if (property != null && property.CanWrite)
+            //    {
+            //        property.SetValue(product, Convert.ChangeType(productUpdates[key], property.PropertyType));
+            //    }
+            //}
+
+            if (products.ProductCode != null)
+                product.ProductCode = products.ProductCode;
+
+            if (products.ProductName != null)
+                product.ProductName = products.ProductName;
+
+            if (products.ProductCost != null)
+                product.ProductCost = products.ProductCost;
+
+            _context.Entry(product).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Product.FindAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            _context.Products.Remove(product);
+            _context.Product.Remove(product);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +134,7 @@ namespace ProductAPI.Controllers
 
         private bool ProductExists(int id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            return _context.Product.Any(e => e.Id == id);
         }
     }
 }
