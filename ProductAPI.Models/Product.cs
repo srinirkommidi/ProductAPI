@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProductAPI.Models
 {
@@ -9,7 +10,8 @@ namespace ProductAPI.Models
         public int ProductCode { get; set; }
         public string ProductName { get; set; }
         public string? ProductDesc { get; set; }
-        public decimal ProductCost { get; set; } = decimal.Zero;
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal ProductCost { get; set; } 
         public string ProductCategory { get; set; }
     }
 

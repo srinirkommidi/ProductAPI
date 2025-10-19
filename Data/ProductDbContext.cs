@@ -15,23 +15,5 @@ namespace ProductAPI.Data
     }
 
       
-        public class ProductDbContextFactory : IDesignTimeDbContextFactory<ProductDbContext>
-        {
-            public ProductDbContext CreateDbContext(string[] args)
-            {
-                // Load configuration from appsettings.json
-                IConfigurationRoot configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json")
-                    .Build();
-
-                var connectionString = configuration.GetConnectionString("ProductConnn");
-
-                var optionsBuilder = new DbContextOptionsBuilder<ProductDbContext>();
-                optionsBuilder.UseSqlServer(connectionString); 
-
-                return new ProductDbContext(optionsBuilder.Options);
-            }
-        }
     }
 
